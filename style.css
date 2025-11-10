@@ -1,0 +1,22 @@
+body {
+  background: #111;
+  color: white;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.page {
+  display: none;
+  padding: 20px;
+}
+
+.page.active {
+  display: block;
+}
+
+canvas {
+  background: #000;
+  border: 2px solid white;
+  display: block;
+  margin: 20px auto;
+}

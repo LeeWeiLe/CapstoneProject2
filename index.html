@@ -1,14 +1,45 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport", content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
-        <title>Flappy Script</title>
-        <script src="flappyscript.js"></script>
-    </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pinball Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('game')">Play Game</button>
+    <button onclick="showPage('profile')">Profile</button>
+  </nav>
 
-    <body>
-        <canvas id="board"></canvas>
-    </body>
+  <!-- Home Page -->
+  <section id="home" class="page active">
+    <h1>Welcome to Pinball!</h1>
+    <p>Hit "Play Game" to start or "Profile" to view your game history.</p>
+  </section>
+
+  <!-- Game Page -->
+  <section id="game" class="page">
+    <canvas id="gameCanvas" width="600" height="800"></canvas>
+    <script src="gameplay.js"></script>
+  </section>
+
+  <!-- Profile Page -->
+  <section id="profile" class="page">
+    <h2>Your Gameplay History</h2>
+    <ul id="historyList"></ul>
+    <script src="profile.js"></script>
+  </section>
+
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+</body>
 </html>
