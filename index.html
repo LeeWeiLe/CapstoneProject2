@@ -7,30 +7,45 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Navigation -->
-  <nav>
-    <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('game')">Play Game</button>
-    <button onclick="showPage('profile')">Profile</button>
-  </nav>
+  
 
   <!-- Home Page -->
   <section id="home" class="page active">
     <h1>Welcome to Pinball!</h1>
     <p>Hit "Play Game" to start or "Profile" to view your game history.</p>
+
+    <!-- Navigation -->
+    <nav>
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('game')">Play Game</button>
+      <button onclick="showPage('profile')">Profile</button>
+    </nav>
   </section>
 
   <!-- Game Page -->
   <section id="game" class="page">
     <canvas id="gameCanvas" width="600" height="800"></canvas>
-    <script src="gameplay.js"></script>
+    <script src="src/gameplay.js"></script>
+    <!-- Navigation -->
+    <nav>
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('game')">Play Game</button>
+      <button onclick="showPage('profile')">Profile</button>
+    </nav>
   </section>
 
   <!-- Profile Page -->
   <section id="profile" class="page">
     <h2>Your Gameplay History</h2>
     <ul id="historyList"></ul>
-    <script src="profile.js"></script>
+    <script src="src/profile.js"></script>
+
+    <!-- Navigation -->
+    <nav>
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('game')">Play Game</button>
+      <button onclick="showPage('profile')">Profile</button>
+    </nav>
   </section>
 
   <script>
