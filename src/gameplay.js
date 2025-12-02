@@ -4,20 +4,20 @@
 const CONFIG = {
   canvas: { w:500, h:700 },
   ball: { r:10, minVel:5, maxVel:20, g:0.2, damp:0.9},
-  spawn: { x:475, y:620 },
+  spawn: { x:485, y:620 },
   flipper: { length:90, width:12, 
     leftrestAng:25, leftactiveAng:-25, // left flipper angles
     rightrestAng:180-25, rightactiveAng:180+25, // right flipper angles
-    speed:0.25, y:620, leftX:150, rightX:350 
+    speed:0.25, y:630, leftX:140, rightX:340 
   },
   rectWalls: [
-    { x:20, y:300, w:30, h:300 },  // left side wall
-    { x:435, y:300, w:30, h:300 }  // right side wall
+    { x:2, y:300, w:30, h:300 },  // left side wall
+    { x:445, y:300, w:30, h:300 }  // right side wall
   ],
   ramps: [ // tilted walls
-    { x: 50, y: 620 - 34, len:120, angDeg: 20,  th:12, side:'left'  }, 
-    { x: 435, y: 620 - 34, len:120, angDeg:180-20,  th:12, side:'right' }, 
-    { x: 500, y: 300, len:120, angDeg:260,  th:12, side:'right' }
+    { x: 30, y: 590, len:120, angDeg: 20,  th:12, side:'left'  }, 
+    { x: 450, y: 590, len:120, angDeg:180-20,  th:12, side:'right' }, 
+    { x: 500, y: 300, len:120, angDeg:260,  th:12, side:'upperright' }
   ],
   pointballs: [ 
     { x:250, y:260, r:26, points:100, color:'#ff4d4d', cooldown:350, lastHit:0 },
@@ -258,3 +258,8 @@ function loop(){
 
 // start
 loop();
+
+
+// ======================================== QUESTION GAME ========================================
+
+
