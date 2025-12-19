@@ -20,3 +20,16 @@ canvas {
   display: block;
   margin: 20px auto;
 }
+
+button {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.answer_buttons button {
+    margin: 0 15px; /* 15px left and right margin for each button */
+}
+
+.hidden {
+  display: none !important;
+}

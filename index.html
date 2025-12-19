@@ -1,66 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pinball Game</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pinball Game</title>
+    <link rel="stylesheet" href="style.css" />
+</head> 
 <body>
-  <!-- Home Page -->
+    <!-- Home Page -->
 
-  <section id="home" class="page">
-    <h1>Welcome to Pinball!</h1>
-    <p>Hit "Play Game" to start or "Profile" to view your game history.</p>
+    <section id="home" class="page">
+        <h1>Welcome to Pinball!</h1>
+        <p>Hit "Play Game" to start or "History" to view your game history.</p>
 
-    <!-- Navigation -->
-    <nav>
-      <button onclick="showPage('game')">Play Game</button>
-      <button onclick="showPage('profile')">Profile</button>
-    </nav>
-  </section>
-
-
-
-  <!-- Game Page -->
-
-  <section id="game" class="page active">
-    <div class="score">Score: <span id="score">0</span></div>
-    <canvas id="gaming_area" width="500" height="700"></canvas>
-    <section class="power-bar"><div class="power-fill" id="powerFill"></div></section>
-    <!-- Navigation -->
-    <nav>
-      <button onclick="showPage('home')">Home</button>
-      <button onclick="showPage('profile')">Profile</button>
-    </nav>
-    <script src="src/gameplay.js"></script>
-  </section>
+        <!-- Navigation -->
+        <nav>
+            <button onclick="showPage('game')">Play Game</button>
+            <button onclick="showPage('history')">History</button>
+        </nav>
+    </section>
 
 
 
-  <!-- Profile Page -->
+    <!-- Game Page -->
 
-  <section id="profile" class="page">
-    <h1>Your Gameplay History</h1>
-    <ul id="historyList"></ul>
-    <script src="src/profile.js"></script>
-    <!-- Navigation -->
-    <nav>
-      <button onclick="showPage('home')">Home</button>
-      <button onclick="showPage('game')">Play Game</button>
-    </nav>
-  </section>
+    <section id="game" class="page active">
+        <div class="score">Total Score: <span id="FinalScore">0</span></div>
+        <div class="score">Score: <span id="score">0</span></div>
+        <canvas id="pinball_area" width="500" height="700"></canvas>
+        <canvas id="question_area" width="500" height="700"></canvas>
+        <div id="answer_buttons" class="answer_buttons">
+            <button id="btnA" name="Option A">Option A</button>
+            <button id="btnB" name="Option B">Option B</button>
+            <button id="btnC" name="Option C">Option C</button>
+            <button id="btnD" name="Option D">Option D</button>
+        </div>
+        <br>
+        <section class="power-bar"><div class="power-fill" id="powerFill"></div></section>
+        <!-- Navigation -->
+        <nav>
+            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('history')">History</button>
+        </nav>
+        
+        <script src="src/wholegame.js"></script>
+    </section>
 
 
 
-  <script>
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-      });
-      document.getElementById(id).classList.add('active');
-    }
-    
-  </script>
+    <!-- Profile Page -->
+
+    <section id="history" class="page">
+        <h1>Your Gameplay History</h1>
+        <ul id="historyList"></ul>
+        <script src="src/history.js"></script>
+        <!-- Navigation -->
+        <nav>
+            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('game')">Play Game</button>
+        </nav>
+    </section>
+
+
+
+    <script>
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(id).classList.add('active');
+        }
+        var answer_question = 0;
+    </script>
 </body>
 </html>
