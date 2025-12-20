@@ -8,6 +8,7 @@ let buttonClickHandler = null;         // persistent handler reference across re
 let QuestionNumber = 1;                // Start from question 1
 let FinalScore = 0;                    // No difficulty selected at the start
 let difficulty = 0;
+let PlayerName = prompt("Enter your name to start the game:"); // Player name to be set from profile page
 
 const pinballCanvasEl  = document.getElementById('pinball_area');
 const questionCanvasEl = document.getElementById('question_area');
@@ -70,6 +71,7 @@ GameFSM.enter.GAME_OVER = ({ finalScore } = {}) => {
 window.addEventListener('load', () => {
     GameFSM.transition('QUESTION');
 });
+
 
 
 function QuestionGame() { // code for the question game
@@ -195,14 +197,9 @@ function QuestionGame() { // code for the question game
     // Define the event handler function
     buttonClickHandler = function() {
         if (difficulties_Choosen) {  //user has answered the question 
-            if (QuestionNumber == 5) {
-                QuestionNumber = 1; //reset to question 1 after question 5
-            } else {
-                QuestionNumber += 1;
-            }
-            difficulties_Choosen = false;
+            difficulties_Choosen = false; //reset difficulty selection
             
-            if (this.id === CorrectButton) {
+            if (this.id === CorrectButton) {  //correct answer selected
                 alert(`You have selected the correct answer! You can play the Pinball Game now!`);
 
 
@@ -216,7 +213,7 @@ function QuestionGame() { // code for the question game
                     button.removeEventListener('click', buttonClickHandler);
                 });
                 
-            } else {
+            } else {  //wrong answer selected
                 if (CorrectButton === 'btnA') {
                     answer = 'A';
                 } else if (CorrectButton === 'btnB') {
@@ -228,6 +225,10 @@ function QuestionGame() { // code for the question game
                 }
                 alert(`Wrong answer selected. The correct answer for this question is: ${answer}. `);
                 setCanvasBackground('questions_bank/ChooseYourDifficulty.png');
+
+                // Check for question number continue or end game
+                checkQuestionNumber();
+                
             }
         } else {  //user has selected his desired difficulty
             difficulties_Choosen = true;
@@ -552,6 +553,9 @@ function updateBall(){
         console.log("Final Score after " + QuestionNumber +" pinball game: " + FinalScore);
         resetBall();
         
+        // Check for question number continue or end game
+        checkQuestionNumber();
+
         GameFSM.transition('QUESTION');
     }
     
@@ -568,3 +572,13 @@ function loop(){
 // start
 loop();
 
+function checkQuestionNumber() {
+    if (QuestionNumber == 5) {
+        QuestionNumber = 1; // Reset to question 1 if it exceeds 5
+        alert(`You have completed all questions and pinball games! Your total score is: ${FinalScore}. Thank you for playing!`);
+        FinalScore = 0;
+        finalScoreEl.textContent = FinalScore;
+    } else {
+        QuestionNumber += 1; // Increment question number
+    }
+}
