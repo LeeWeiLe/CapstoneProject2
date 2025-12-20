@@ -9,10 +9,22 @@
 <body>
     <!-- Home Page -->
 
-    <section id="home" class="page">
+    <section id="home" class="page active">
         <h1>Welcome to Pinball!</h1>
-        <p>Hit "Play Game" to start or "History" to view your game history.</p>
-
+        <p> <br> </p>
+        <p>1. this game is a combination of a pinball game and a question game.</p>
+        <p>2. Answer questions correctly to score points while playing pinball!</p>
+        <p>3. Choose your difficulty level at the start of questions.</p>
+        <p>4. Select the correct answer from the options provided using the buttons below. </p>
+        <p>5. If the wrong answer is selected, the chance of playing the pinball game is lost and unable to score points.</p>
+        <p>6. if the correct answer is selected, you will be able to play the pinball game and score points.</p>
+        <p>7. Higher difficulty levels will give more points when you answer correctly.</p>
+        <p>8. To start playing the pinball game, hold the down arrow key to gain power and release it to launch the ball.</p>
+        <p>9. Use the left and right arrow keys to control the flippers and keep the ball in play.</p>
+        <p> <br> </p>
+        <p>Hit "Play Game" to start or hit "History" to view your game history.</p>
+        <p>Enjoy the challenge and aim for the highest score. Good luck and have fun!</p>
+        <p> <br> </p>
         <!-- Navigation -->
         <nav>
             <button onclick="showPage('game')">Play Game</button>
@@ -24,7 +36,7 @@
 
     <!-- Game Page -->
 
-    <section id="game" class="page active">
+    <section id="game" class="page">
         <div class="score">Total Score: <span id="FinalScore">0</span></div>
         <div class="score">Score: <span id="score">0</span></div>
         <canvas id="pinball_area" width="500" height="700"></canvas>
@@ -43,7 +55,7 @@
             <button onclick="showPage('history')">History</button>
         </nav>
         
-        <script src="src/wholegame.js"></script>
+        <script src="src/wholegame_fsm.js"></script>
     </section>
 
 

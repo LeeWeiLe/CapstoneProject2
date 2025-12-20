@@ -1,38 +1,87 @@
-
-
-
-
-
 // ======================================== QUESTION GAME ========================================
-// ===== DOM =====
-const pinballcanvas = document.getElementById('pinball_area');
-const pinballctx = pinballcanvas.getContext('2d');
-const powerFill = document.getElementById('powerFill');
-const scoreEl = document.getElementById('score');
-const finalScoreEl = document.getElementById('FinalScore');
 
-// ===== QUESTION CANVAS =====
-const questioncanvas = document.getElementById('question_area');
-const questionctx = questioncanvas.getContext('2d');
+"use strict";
 
-// show question game and hide pinball game
-pinballcanvas.style.display = "none";
-questioncanvas.style.display = "block";
-document.getElementById("answer_buttons").style.display = "block";
+// --- UI gating (Question vs Pinball) ---
+// (pinball permission is controlled by GameFSM state)
+let buttonClickHandler = null;         // persistent handler reference across restarts
+let QuestionNumber = 1;                // Start from question 1
+let FinalScore = 0;                    // No difficulty selected at the start
+let difficulty = 0;
 
-QuestionNumber = 1; // Start from question 1
-difficulty = 0; // No difficulty selected at the start
-FinalScore = 0; // Final score to be set after pinball game
+const pinballCanvasEl  = document.getElementById('pinball_area');
+const questionCanvasEl = document.getElementById('question_area');
+const answerButtonsEl  = document.getElementById('answer_buttons');
+
+// --- Finite State Machine (FSM) ---
+// States: QUESTION (answering) -> PINBALL (playing) -> QUESTION ...
+const GameFSM = {
+    state: 'BOOT',
+    enter: {},
+    exit: {},
+    transition(next, payload = {}) {
+        if (this.state === next) return;
+        if (this.exit[this.state]) this.exit[this.state](payload);
+        this.state = next;
+        if (this.enter[next]) this.enter[next](payload);
+    },
+    is(state) { return this.state === state; }
+};
+
+// Derive permissions from state (single source of truth)
+function pinballEnabled() { return GameFSM.is('PINBALL'); }
+
+// Robust show/hide without requiring CSS changes
+function setHidden(el, hidden) {
+    if (!el) return;
+    el.style.display = hidden ? 'none' : 'block';
+}
+
+function showQuestionMode() {
+    setHidden(questionCanvasEl, false);
+    setHidden(answerButtonsEl, false);
+    setHidden(pinballCanvasEl, true);
+}
+
+function showPinballMode() {
+    setHidden(questionCanvasEl, true);
+    setHidden(answerButtonsEl, true);
+    setHidden(pinballCanvasEl, false);
+}
+
+
+// --- FSM enter/exit actions ---
+GameFSM.enter.QUESTION = () => {
+    showQuestionMode();
+    QuestionGame();
+};
+
+GameFSM.enter.PINBALL = () => {
+    showPinballMode();
+    // pinball loop is already running; input & physics are gated by pinballEnabled()
+};
+
+GameFSM.enter.GAME_OVER = ({ finalScore } = {}) => {
+    // Persist / display score handled elsewhere (existing code uses alert)
+    showQuestionMode();
+};
+
+// Bootstrap: start in QUESTION state once DOM is ready
+window.addEventListener('load', () => {
+    GameFSM.transition('QUESTION');
+});
+
 
 function QuestionGame() { // code for the question game
+    // Canvas setup
+    const questioncanvas = document.getElementById('question_area');
+    const questionctx = questioncanvas.getContext('2d');
+
+
+    // QUESTION UI is shown by FSM on entry
     let difficulties_Choosen = false;
     let CorrectButton = '';
     let answer = '';
-
-    
-    // Define event handler function outside so we can reference it
-    let buttonClickHandler = null;
-
     // use to set canvas background image
     function setCanvasBackground(imagePath) {
         const img = new Image();
@@ -68,6 +117,7 @@ function QuestionGame() { // code for the question game
             default:
                 alert('No difficulty assigned?');
         }
+        updatePointBallsForDifficulty(difficulty);
     }
 
     // use to search for questions when difficulties selected
@@ -155,9 +205,9 @@ function QuestionGame() { // code for the question game
             if (this.id === CorrectButton) {
                 alert(`You have selected the correct answer! You can play the Pinball Game now!`);
 
-                // Apply difficulty-based point values to pinball game
-                updatePointBallsForDifficulty(difficulty);
 
+                // Transition to PINBALL mode (questions hidden & pinball enabled)
+                GameFSM.transition('PINBALL');
                 // Clear everything from question game
                 questionctx.clearRect(0, 0, questioncanvas.width, questioncanvas.height);
                 
@@ -165,12 +215,7 @@ function QuestionGame() { // code for the question game
                 document.querySelectorAll('.answer_buttons button').forEach(button => {
                     button.removeEventListener('click', buttonClickHandler);
                 });
-
-                // show pinball game and hide question game
-                pinballcanvas.style.display = "block";
-                questioncanvas.style.display = "none";
-                document.getElementById("answer_buttons").style.display = "none";
-
+                
             } else {
                 if (CorrectButton === 'btnA') {
                     answer = 'A';
@@ -200,6 +245,7 @@ function QuestionGame() { // code for the question game
     return;
 }
 
+showQuestionMode();
 QuestionGame(); // Start with question 1
 
 
@@ -265,7 +311,6 @@ function updatePointBallsForDifficulty(diff) {
     console.log(`Updated point balls for difficulty ${diff}:`, CONFIG.pointballs.map(b => b.points));
 }
 
-
 // ===== STATE =====
 const state = {
     ball: { x: CONFIG.spawn.x, y: CONFIG.spawn.y, vx:0, vy:0 },
@@ -276,9 +321,16 @@ const state = {
     score:0
 };
 
+// ===== DOM =====
+const pinballcanvas = document.getElementById('pinball_area');
+const pinballctx = pinballcanvas.getContext('2d');
+const powerFill = document.getElementById('powerFill');
+const scoreEl = document.getElementById('score');
+const finalScoreEl = document.getElementById('FinalScore');
 
 // ===== INPUT =====
 document.addEventListener('keydown', e=>{
+    if (!pinballEnabled()) return;
     if (e.code==='ArrowDown' && !state.charging && !state.launched) { state.charging=true; state.power=0; }
     if (e.code==='ArrowLeft') state.leftActive = true;
     if (e.code==='ArrowRight') state.rightActive = true;
@@ -304,6 +356,7 @@ function now(){ return performance.now(); }
 
 // ===== LAUNCH / RESET =====
 function launchBall(){
+    if (!pinballEnabled()) return;
     state.launched = true; state.charging = false;
     const vel = CONFIG.ball.minVel + state.power * (CONFIG.ball.maxVel - CONFIG.ball.minVel);
     state.ball.vx = 0; state.ball.vy = -vel; state.power = 0; powerFill.style.width='0%';
@@ -311,7 +364,7 @@ function launchBall(){
 function resetBall(){
     state.ball = { x:CONFIG.spawn.x, y:CONFIG.spawn.y, vx:0, vy:0 };
     state.launched = false; state.power = 0; powerFill.style.width='0%';
-    state.score = 0; scoreEl.textContent = state.score; 
+    state.score = 0; scoreEl.textContent = state.score;
 }
 
 // ===== DRAW =====
@@ -498,12 +551,8 @@ function updateBall(){
         finalScoreEl.textContent = FinalScore;
         console.log("Final Score after " + QuestionNumber +" pinball game: " + FinalScore);
         resetBall();
-
-        // show question game and hide pinball game
-        pinballcanvas.style.display = "none";
-        questioncanvas.style.display = "block";
-        document.getElementById("answer_buttons").style.display = "block";
-        QuestionGame();
+        
+        GameFSM.transition('QUESTION');
     }
     
 }
@@ -512,7 +561,7 @@ function updateBall(){
 function loop(){
     render();
     updateFlippers();
-    if (state.launched) updateBall();
+    if (state.launched && pinballEnabled()) updateBall();
     requestAnimationFrame(loop);
 }
 
