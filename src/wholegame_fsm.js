@@ -575,9 +575,12 @@ loop();
 function checkQuestionNumber() {
     if (QuestionNumber == 5) {
         QuestionNumber = 1; // Reset to question 1 if it exceeds 5
+        saveGameHistory(PlayerName, FinalScore); // Example usage
+        displayHistory(); // Refresh display after saving
         alert(`You have completed all questions and pinball games! Your total score is: ${FinalScore}. Thank you for playing!`);
         FinalScore = 0;
         finalScoreEl.textContent = FinalScore;
+        
     } else {
         QuestionNumber += 1; // Increment question number
     }
